@@ -1,0 +1,2 @@
+# Econoticias
+EcoNotícias Repositório dedicado à coleta e publicação automatizada de notícias sobre reciclagem, gestão de resíduos, compostagem e sustentabilidade. Nosso objetivo é alimentar a página Olixo.org com informações atualizadas e relevantes sobre ações ambientais, promovendo conscientização e soluções ecológicas.  Este projeto utiliza APIs de notícias e automação para garantir atualizações diárias, trazendo as manchetes mais importantes do setor.
