@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<title>Últimas Notícias Ambientais</title>
+<style>
+iframe { width: 100%; height: 500px; border: none; margin-top: 20px; }
+</style>
+<script>
+function carregarNoticia(url) {
+    document.getElementById('noticia-frame').src = url;
+    document.getElementById('noticia-frame').style.display = 'block';
+}
+</script>
+</head>
+<body>
+<h1>Últimas Notícias Ambientais</h1>
+<ul>
+    <li><a href="#" onclick="carregarNoticia('https://www.bbc.com/news/articles/c057qrd9eejo')">Os oceanos não podem se tornar 'Wild West', alerta o chefe da ONU</a> - Mon, 09 Jun 2025 12:03:30 GMT</li>
+    <li><a href="#" onclick="carregarNoticia('https://www.bbc.com/news/articles/c3v507lx0e3o')">Reino Unido propõe uma proibição mais ampla de arrasto destrutivo do oceano</a> - Mon, 09 Jun 2025 10:42:18 GMT</li>
+    <li><a href="#" onclick="carregarNoticia('https://www.bbc.com/news/articles/c87jq0djw00o')">Trump-Musk Row aumenta os temores sobre os cortes no orçamento da NASA</a> - Sat, 07 Jun 2025 23:29:56 GMT</li>
+    <li><a href="#" onclick="carregarNoticia('https://www.bbc.com/news/articles/c3d4387x1d0o')">William adverte a vida oceânica 'diminuindo diante de nossos olhos'</a> - Sun, 08 Jun 2025 10:48:17 GMT</li>
+    <li><a href="#" onclick="carregarNoticia('https://www.bbc.com/news/videos/cev4lzg7zeko')">Assista: Moment Chile Terremoks Rocks Live TV Show</a> - Sat, 07 Jun 2025 01:52:38 GMT</li>
+</ul>
+<iframe id='noticia-frame' style='display: none;'></iframe>
+</body>
+</html>
