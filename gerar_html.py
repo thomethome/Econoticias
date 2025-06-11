@@ -1,47 +1,59 @@
-import csv
-from googletrans import Translator  # Biblioteca de tradução
+import pandas as pd
 
-# Inicializar tradutor
-translator = Translator()
+# Carregar as notícias do CSV
+df = pd.read_csv("noticias.csv", encoding="utf-8")
 
-# Nome dos arquivos
-arquivo_csv = "noticias.csv"
-arquivo_html = "noticias.html"
+# Criar estrutura HTML inicial
+html_content = """
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoNotícias - OLixo.org</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; padding: 0; background-color: #f4f4f4; }
+        h1 { text-align: center; color: #3498db; }
+        h2 { text-align: center; color: #2c3e50; }
+        .logo-container { text-align: center; margin: 20px 0; }
+        .logo-container img { width: 200px; }
+        ul { list-style-type: none; padding: 0; }
+        li { background: white; margin: 10px; padding: 15px; border-radius: 5px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); }
+        a { text-decoration: none; font-weight: bold; color: #3498db; }
+        a:hover { color: #2c3e50; }
+    </style>
+</head>
+<body>
+    <h1>Bem-vindo ao OLixo.org – EcoNotícias!</h1>
+    
+    <div class="logo-container">
+        <img src="logo.png" alt="OLixo.org">
+        <h2>Transformando resíduos em oportunidades!</h2>
+    </div>
+    
+    <h2>Últimas notícias sobre sustentabilidade</h2>
+    <ul>
+"""
 
-# Criar um arquivo HTML com formatação correta
-with open(arquivo_html, "w", encoding="utf-8") as arquivo:
-    arquivo.write("<!DOCTYPE html>\n<html>\n<head>\n")
-    arquivo.write("<meta charset='UTF-8'>\n<title>Últimas Notícias Ambientais</title>\n")
-    arquivo.write("<style>\n")
-    arquivo.write("iframe { width: 100%; height: 500px; border: none; margin-top: 20px; }\n")  # Estilo do iframe
-    arquivo.write("</style>\n")
-    arquivo.write("<script>\n")
-    arquivo.write("function carregarNoticia(url) {\n")
-    arquivo.write("    document.getElementById('noticia-frame').src = url;\n")
-    arquivo.write("    document.getElementById('noticia-frame').style.display = 'block';\n")
-    arquivo.write("}\n")
-    arquivo.write("</script>\n")
-    arquivo.write("</head>\n<body>\n")
-    arquivo.write("<h1>Últimas Notícias Ambientais</h1>\n")
-    arquivo.write("<ul>\n")
+# Controlar links da BBC para evitar duplicação
+bbc_count = 0
 
-    # Ler os dados do CSV e traduzir as manchetes
-    with open(arquivo_csv, "r", encoding="utf-8") as csvfile:
-        leitor_csv = csv.reader(csvfile)
-        next(leitor_csv)  # Pular cabeçalho
-        
-        for linha in leitor_csv:
-            titulo_original, link, data = linha
-            titulo_traduzido = translator.translate(titulo_original, dest="pt").text  # Traduz para PT
-            
-            # Criar link para carregar notícia dentro do iframe
-            arquivo.write(f'    <li><a href="#" onclick="carregarNoticia(\'{link}\')">{titulo_traduzido}</a> - {data}</li>\n')
+for _, row in df.iterrows():
+    if "bbc.com" in row["link"]:
+        if bbc_count == 0:  # Permite apenas um link da BBC
+            html_content += f'        <li><a href="{row["link"]}" target="_blank">{row["titulo"]}</a></li>\n'
+            bbc_count += 1
+    else:
+        html_content += f'        <li><a href="{row["link"]}" target="_blank">{row["titulo"]}</a></li>\n'
 
-    arquivo.write("</ul>\n")
-    arquivo.write("<iframe id='noticia-frame' style='display: none;'></iframe>\n")  # Adiciona um iframe invisível
-    arquivo.write("</body>\n</html>\n")
+html_content += """
+    </ul>
+</body>
+</html>
+"""
 
-print("\n🎯 Página `noticias.html` gerada com tradução e exibição das notícias corrigida!")
+# Salvar o HTML final
+with open("index.html", "w", encoding="utf-8") as file:
+    file.write(html_content)
 
-        
-       
+print("✅ Arquivo index.html atualizado com um link único da BBC, logo e melhor estilização!")

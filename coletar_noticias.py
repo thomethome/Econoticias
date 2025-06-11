@@ -1,36 +1,58 @@
-import feedparser
+import requests
+from bs4 import BeautifulSoup
 import csv
 
-# Fonte única para testar
-rss_url = "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml"
+# Lista de URLs das fontes de notícias
+urls = [
+    "https://www.nationalgeographicbrasil.com",
+    "https://www.ecodebate.com.br",
+    "https://www.greenpeace.org/brasil",
+    "https://www.scielo.br",
+    "https://semil.sp.gov.br/",
+    "https://www.embrapa.br/",
+    "https://www.sema.df.gov.br/",
+    "https://www.teraambiental.com.br/",
+    "https://www.santos.sp.gov.br/?q=hotsite/composta-santos",
+    "https://boavista.rr.gov.br/noticias/2025/5/prefeitura-de-boa-vista-impulsiona-gestao-sustentavel-com-ecopontos-e-centro-de-compostagem",
+    "https://cepagro.org.br/",
+    "https://recicleiros.org.br/",
+    "https://www.wwf.org.br",
+    "https://www.conexaoplaneta.com.br",
+    "https://www.akatu.org.br",
+]
 
-# Processar o feed RSS
-feed = feedparser.parse(rss_url)
+# Criar (ou sobrescrever) o arquivo CSV
+with open("noticias.csv", "w", newline="", encoding="utf-8") as file:
+    writer = csv.writer(file)
+    writer.writerow(["titulo", "link"])  # Cabeçalho do CSV
 
-# Nome do arquivo CSV
-arquivo_csv = "noticias.csv"
+    # Definir cabeçalho User-Agent para evitar bloqueios
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                      "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
 
-# Criar e abrir o arquivo CSV para escrita
-with open(arquivo_csv, mode="w", newline="", encoding="utf-8") as arquivo:
-    escritor_csv = csv.writer(arquivo)
-    escritor_csv.writerow(["Título", "Link", "Data"])  # Cabeçalhos do CSV
+    def coletar_manchetes(url):
+        try:
+            resposta = requests.get(url, headers=headers, timeout=10)
+            resposta.raise_for_status()
+            soup = BeautifulSoup(resposta.content, "html.parser", from_encoding="utf-8")
 
-    print("🔍 Coletando notícias ambientais e salvando no arquivo CSV...\n")
+            titulos = soup.find_all(["h1", "h2", "h3"], limit=3)  # Limita para 3 manchetes por site
 
-    if not feed.entries:
-        print("⚠️ Nenhuma notícia encontrada.")
-    else:
-        for entry in feed.entries[:5]:  # Pegamos as 5 primeiras notícias
-            titulo = entry.title
-            link = entry.link
-            data = entry.published if hasattr(entry, "published") else "Data não disponível"
+            for titulo in titulos:
+                titulo_texto = titulo.get_text(strip=True)
+                link = titulo.find_parent("a")
+                link_url = link["href"] if (link and "http" in link["href"]) else url  # Filtrar links inválidos
+                
+                writer.writerow([titulo_texto, link_url])  # Adicionamos ao CSV
 
-            escritor_csv.writerow([titulo, link, data])  # Escrever no CSV
+        except requests.exceptions.RequestException as e:
+            print(f"Erro ao acessar {url}: {e}")
 
-            print(f"✅ Título: {titulo}")
-            print(f"🔗 Link: {link}")
-            print(f"🗓 Data: {data}")
-            print("-" * 40)
+    # Executar a coleta para todas as URLs
+    for url in urls:
+        coletar_manchetes(url)
 
-print("\n🎯 Coleta concluída! O arquivo `noticias.csv` foi gerado com sucesso.")
+print("✅ Notícias coletadas e salvas em noticias.csv com todas as fontes atualizadas!")
 
