@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Econotícias</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5; }
+        #noticias { max-width: 800px; margin: auto; }
+        .noticia { background: white; padding: 15px; margin: 10px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h3 { margin: 0 0 10px; }
+        small { color: gray; }
+    </style>
+</head>
+<body>
+
+    <h1>Econotícias</h1>
+    <div id="noticias">Carregando...</div>
+
+    <script>
+        fetch("URL_DO_JSON")  // Substitua pela URL do JSON hospedado
+            .then(response => response.json())
+            .then(noticias => {
+                let container = document.getElementById("noticias");
+                container.innerHTML = "";  // Limpa o texto "Carregando..."
+                
+                noticias.forEach(noticia => {
+                    let item = document.createElement("div");
+                    item.className = "noticia";
+                    item.innerHTML = `<h3>${noticia.titulo}</h3>
+                                      <p>${noticia.descricao}</p>
+                                      <small>${noticia.data}</small>`;
+                    container.appendChild(item);
+                });
+            })
+            .catch(error => {
+                console.error("Erro ao carregar notícias:", error);
+                document.getElementById("noticias").innerHTML = "Erro ao carregar notícias.";
+            });
+    </script>
+
+</body>
+</html>
