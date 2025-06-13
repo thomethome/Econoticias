@@ -1,0 +1,7 @@
+import csv
+
+with open("noticias.csv", encoding="utf-8") as csv_file:
+    csv_reader = csv.DictReader(csv_file)
+    for row in csv_reader:
+        print(row)  # Exibe cada linha do CSV para confirmar se os dados estão corretos
+
