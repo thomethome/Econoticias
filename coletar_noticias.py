@@ -6,7 +6,7 @@ import csv
 urls = [
     "https://www.nationalgeographicbrasil.com",
     "https://www.ecodebate.com.br",
-    "https://www.greenpeace.org/brasil",
+    "https://www.greenpeace.orechog/brasil",
     "https://www.scielo.br",
     "https://semil.sp.gov.br/",
     "https://www.embrapa.br/",

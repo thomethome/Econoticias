@@ -12,8 +12,9 @@ jobs:
       - name: Preparar conteúdo do post
         id: gerar
         run: |
-          echo "::set-output name=title::Atualização do EcoNotícias"
-          echo "::set-output name=body::🌱 Novas notícias de sustentabilidade foram publicadas automaticamente."
+           echo "::set-output name=title::🌎 Teste nº2 - Automação EcoNotícias"
+           echo "::set-output name=body::🚧 Publicação de teste realizada às $(date +'%d/%m/%Y %H:%M:%S') (horário do push)."
+
 
       - name: Publicar no WordPress
         env:
