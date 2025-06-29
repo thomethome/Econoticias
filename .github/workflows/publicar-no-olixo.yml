@@ -1,0 +1,30 @@
+name: Publicar no WordPress
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  postar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Preparar conteúdo do post
+        id: gerar
+        run: |
+          echo "::set-output name=title::Atualização do EcoNotícias"
+          echo "::set-output name=body::🌱 Novas notícias de sustentabilidade foram publicadas automaticamente."
+
+      - name: Publicar no WordPress
+        env:
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: |
+          curl -X POST https://olixo.org/wp-json/wp/v2/posts \
+          -u "$WP_USER:$WP_APP_PASSWORD" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"title\": \"${{ steps.gerar.outputs.title }}\",
+            \"content\": \"${{ steps.gerar.outputs.body }}\",
+            \"status\": \"publish\"
+          }"
